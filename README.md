@@ -1,8 +1,8 @@
 # Piperator
 
-Welcome to your new gem! In this directory, you'll find the files you need to be able to package up your Ruby library into a gem. Put your Ruby code in the file `lib/piperator`. To experiment with that code, run `bin/console` for an interactive prompt.
-
-TODO: Delete this and the text above, and describe your gem
+Stream processing using Ruby Enumerators made easy. Build composable pipelines
+to allows data to flow though them with possibility to add initialisation and
+clean up code.
 
 ## Installation
 
@@ -22,7 +22,28 @@ Or install it yourself as:
 
 ## Usage
 
-TODO: Write usage instructions here
+```ruby
+append_end = proc do |enumerator|
+  Enumerator.new do |yielder|
+    enumerator.lazy.each { |item| yielder << item }
+    yielder << 'end'
+  end
+end
+
+prepend_start = proc do |enumerator|
+  Enumerator.new do |yielder|
+    yielder << 'start'
+    enumerator.lazy.each { |item| yielder << item }
+  end
+end
+
+double = ->(enumerator) { enumerator.lazy.map { |i| i * 2 } }
+
+double = Piperator::Pipeline.new([double])
+prepend_append = Piperator::Pipeline.new([prepend_start, append_end])
+(double + prepend_append).call([1, 2, 3]).to_a
+# => ['start', 2, 4, 6, 'end']
+```
 
 ## Development
 
