@@ -1,33 +1,111 @@
 # Piperator
 
-Stream processing using Ruby Enumerators made easy. Build composable pipelines
-to allows data to flow though them with possibility to add initialisation and
-clean up code.
+Pipelines for streaming large collections. The pipeline enables composition of streaming pipelines with lazy enumerables.
+
+The library is heavily inspired by [Elixir pipe operator](https://elixirschool.com/lessons/basics/pipe-operator/) and [Node.js Stream](https://nodejs.org/api/stream.html).
+
+[![Build Status](https://travis-ci.org/lautis/piperator.svg?branch=master)](https://travis-ci.org/lautis/piperator)
+
 
 ## Installation
 
-Add this line to your application's Gemfile:
+Piperator is distributed as a ruby gem and can be installed with
 
-```ruby
-gem 'piperator'
 ```
-
-And then execute:
-
-    $ bundle
-
-Or install it yourself as:
-
-    $ gem install piperator
+$ gem install piperator
+```
 
 ## Usage
 
+Start by requiring the gem
+
 ```ruby
 require 'piperator'
+```
 
+As an appetiser, here's a pipeline that triples all input values and then sums the values.
+
+```ruby
+Piperator.
+  pipe(->(values) { values.lazy.map { |i| i * 3 } }).
+  pipe(->(values) { values.sum }).
+  call([1, 2, 3])
+# => 18
+```
+
+If desired, the input enumerable can also be given as the first pipe.
+
+```ruby
+Piperator.
+  pipe([1, 2, 3]).
+  pipe(->(values) { values.lazy.map { |i| i * 3 } }).
+  pipe(->(values) { values.sum }).
+  call
+# => 18
+```
+
+There is, of course, a much more idiomatic alternative in Ruby:
+
+```ruby
+[1, 2, 3].map { |i| i * 3 }.sum
+```
+
+So why bother?
+
+To run code before the stream processing start and after processing has ended. Let's use the same pattern to calculate the decompressed length of a GZip file fetched over HTTP with streaming.
+
+```ruby
+require 'piperator'
+require 'uri'
+require 'em-http-request'
+require 'net/http'
+
+module HTTPFetch
+  def self.call(url)
+    uri = URI(url)
+    Enumerator.new do |yielder|
+      Net::HTTP.start(uri.host, uri.port, use_ssl: uri.scheme == 'https') do |http|
+        request = Net::HTTP::Get.new(uri.request_uri)
+        http.request request do |response|
+          response.read_body { |chunk| yielder << chunk }
+        end
+      end
+    end
+  end
+end
+
+module GZipDecoder
+  def self.call(enumerable)
+    Enumerator.new do |yielder|
+      decoder = EventMachine::HttpDecoders::GZip.new do |chunk|
+        yielder << chunk
+      end
+
+      enumerable.each { |chunk| decoder << chunk }
+      yielder << decoder.finalize.to_s
+    end
+  end
+end
+
+length = proc do |enumerable|
+  enumerable.lazy.reduce(0) { |aggregate, chunk| aggregate + chunk.length }
+end
+
+Piperator.
+  pipe(HTTPFetch).
+  pipe(GZipDecoder).
+  pipe(length).
+  call('http://ftp.gnu.org/gnu/gzip/gzip-1.2.4.tar.gz')
+```
+
+At no point is it necessary to keep the full response or decompressed content in memory. This is a huge win when the file sizes grow beyond the 780kB seen in the example.
+
+Pipelines themselves respond to `#call`. This enables using pipelines as pipes in other pipelines.
+
+```ruby
 append_end = proc do |enumerator|
   Enumerator.new do |yielder|
-    enumerator.lazy.each { |item| yielder << item }
+    enumerator.each { |item| yielder << item }
     yielder << 'end'
   end
 end
@@ -35,7 +113,7 @@ end
 prepend_start = proc do |enumerator|
   Enumerator.new do |yielder|
     yielder << 'start'
-    enumerator.lazy.each { |item| yielder << item }
+    enumerator.each { |item| yielder << item }
   end
 end
 

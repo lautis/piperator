@@ -10,8 +10,8 @@ Gem::Specification.new do |spec|
   spec.authors = ['Ville Lautanala']
   spec.email = ['lautis@gmail.com']
 
-  spec.summary = 'Composable pipelines for Enumerators.'
-  spec.description = 'Composable pipelines for Enumerators.'
+  spec.summary = 'Composable pipelines for streaming large collections'
+  spec.description = 'Pipelines for streaming large collections with composition inspired by Elixir pipes.'
   spec.homepage = 'https://github.com/lautis/piperator'
   spec.license = 'MIT'
 
