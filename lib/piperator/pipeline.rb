@@ -1,6 +1,6 @@
 module Piperator
   class Pipeline
-    def initialize(chains)
+    def initialize(chains = [])
       @chains = chains
     end
 

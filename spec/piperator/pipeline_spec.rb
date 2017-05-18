@@ -23,5 +23,10 @@ RSpec.describe Piperator::Pipeline do
       second = Piperator::Pipeline.new([add1])
       expect((first + second).call([1, 2, 3]).to_a).to eq([2, 5, 10])
     end
+
+    it 'can compose callables' do
+      pipeline = Piperator::Pipeline.new
+      expect((pipeline + add1 + square).call([1, 2, 3]).to_a).to eq([4, 9, 16])
+    end
   end
 end
