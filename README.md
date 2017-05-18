@@ -23,6 +23,8 @@ Or install it yourself as:
 ## Usage
 
 ```ruby
+require 'piperator'
+
 append_end = proc do |enumerator|
   Enumerator.new do |yielder|
     enumerator.lazy.each { |item| yielder << item }
@@ -39,8 +41,8 @@ end
 
 double = ->(enumerator) { enumerator.lazy.map { |i| i * 2 } }
 
-prepend_append = Piperator::Pipeline.new([prepend_start, append_end])
-Piperator::Pipeline.pipe(double).pipe(prepend_append).call([1, 2, 3]).to_a
+prepend_append = Piperator.pipe(prepend_start).pipe(append_end)
+Piperator.pipe(double).pipe(prepend_append).call([1, 2, 3]).to_a
 # => ['start', 2, 4, 6, 'end']
 ```
 
