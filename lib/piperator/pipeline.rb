@@ -3,12 +3,16 @@ module Piperator
   # It contains a collection of parts that respond to #call(enumerable) and
   # return a enumerable.
   class Pipeline
-    # Build a new pipeline with callable
+    # Build a new pipeline from a callable or an enumerable object
     #
-    # @param callable An object responding to call(enumerable) and returns Enumerale.
+    # @param callable An object responding to call(enumerable) and returns Enumerable or an Enumerable
     # @return [Pipeline] A pipeline containing only the callable
     def self.pipe(callable)
-      Pipeline.new([callable])
+      if callable.respond_to?(:call)
+        Pipeline.new([callable])
+      else
+        Pipeline.new([->(_) { callable }])
+      end
     end
 
     # Returns enumerable given as an argument without modifications. Usable when
@@ -30,6 +34,13 @@ module Piperator
     # @return [Enumerable] A lazy enumerable containing all the parts
     def call(enumerable)
       @chains.reduce(enumerable) { |chain, memo| memo.call(chain) }
+    end
+
+    # Compute the pipeline and strictly evaluate the result
+    #
+    # @return [Array]
+    def to_a(enumerable = nil)
+      call(enumerable).to_a
     end
 
     # Add a new part to the pipeline
