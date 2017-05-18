@@ -3,6 +3,7 @@ require 'spec_helper'
 RSpec.describe Piperator::Pipeline do
   let(:add1) { ->(input) { input.lazy.map { |i| i + 1 } } }
   let(:square) { ->(input) { input.lazy.map { |i| i * i } } }
+  let(:sum) { ->(input) { input.sum } }
 
   describe 'calling' do
     it 'calls through all chain pipes in order' do
@@ -14,6 +15,10 @@ RSpec.describe Piperator::Pipeline do
       input = [1, 2, 3]
       chain = Piperator::Pipeline.new([])
       expect(chain.call(input).to_a).to be(input)
+    end
+
+    it 'defaults to empty array when calling' do
+      expect(Piperator::Pipeline.new([sum]).call([])).to eq(0)
     end
   end
 
@@ -42,6 +47,10 @@ RSpec.describe Piperator::Pipeline do
     it 'can start pipeline from an enumerable' do
       pipeline = Piperator::Pipeline.pipe([1, 2, 3]).pipe(add1)
       expect(pipeline.to_a).to eq([2, 3, 4])
+    end
+
+    it 'can do strict evaluation at the end' do
+      expect(Piperator::Pipeline.pipe(add1).pipe(sum).call([1, 2, 3])).to eq(9)
     end
   end
 end

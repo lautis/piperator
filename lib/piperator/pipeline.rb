@@ -20,7 +20,7 @@ module Piperator
     #
     # @param enumerable [Enumerable]
     # @return [Enumerable]
-    def self.call(enumerable)
+    def self.call(enumerable = [])
       enumerable
     end
 
@@ -32,14 +32,14 @@ module Piperator
     #
     # @param enumerable Argument given to the first part in the pipeline
     # @return [Enumerable] A lazy enumerable containing all the parts
-    def call(enumerable)
-      @chains.reduce(enumerable) { |chain, memo| memo.call(chain) }
+    def call(enumerable = [])
+      @pipes.reduce(enumerable) { |pipe, memo| memo.call(pipe) }
     end
 
     # Compute the pipeline and strictly evaluate the result
     #
     # @return [Array]
-    def to_a(enumerable = nil)
+    def to_a(enumerable = [])
       call(enumerable).to_a
     end
 
