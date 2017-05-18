@@ -21,17 +21,13 @@ RSpec.describe Piperator::Pipeline do
     it 'runs runs through all input pipes' do
       first = Piperator::Pipeline.new([square])
       second = Piperator::Pipeline.new([add1])
-      expect((first + second).call([1, 2, 3]).to_a).to eq([2, 5, 10])
+      expect(first.pipe(second).call([1, 2, 3]).to_a).to eq([2, 5, 10])
     end
 
     it 'can compose callables' do
       pipeline = Piperator::Pipeline.new
-      expect((pipeline + add1 + square).call([1, 2, 3]).to_a).to eq([4, 9, 16])
-    end
-
-    it 'aliases + to pipe' do
-      pipeline = Piperator::Pipeline.pipe([1])
-      expect(pipeline.pipe(add1).to_a).to eq([2])
+      expect(pipeline.pipe(add1).pipe(square).call([1, 2, 3]).to_a)
+        .to eq([4, 9, 16])
     end
 
     it 'can start composition from empty Pipeline class' do

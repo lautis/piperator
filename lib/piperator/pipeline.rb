@@ -47,10 +47,8 @@ module Piperator
     #
     # @param other A part to append in pipeline. Responds to #call.
     # @return [Pipeline] A new pipeline instance
-    def +(other)
+    def pipe(other)
       Pipeline.new(@chains + [other])
     end
-
-    alias pipe +
   end
 end
