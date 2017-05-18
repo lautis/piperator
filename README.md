@@ -39,9 +39,8 @@ end
 
 double = ->(enumerator) { enumerator.lazy.map { |i| i * 2 } }
 
-double = Piperator::Pipeline.new([double])
 prepend_append = Piperator::Pipeline.new([prepend_start, append_end])
-(double + prepend_append).call([1, 2, 3]).to_a
+Piperator::Pipeline.pipe(double).pipe(prepend_append).call([1, 2, 3]).to_a
 # => ['start', 2, 4, 6, 'end']
 ```
 

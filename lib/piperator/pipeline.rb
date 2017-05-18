@@ -1,5 +1,13 @@
 module Piperator
   class Pipeline
+    def self.pipe(callable)
+      Pipeline.new([callable])
+    end
+
+    def self.call(enumerable)
+      enumerable
+    end
+
     def initialize(chains = [])
       @chains = chains
     end

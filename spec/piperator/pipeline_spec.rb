@@ -33,5 +33,14 @@ RSpec.describe Piperator::Pipeline do
       pipeline = Piperator::Pipeline.new
       expect((pipeline.pipe(add1)).call([1]).to_a).to eq([2])
     end
+
+    it 'can start composition from empty Pipeline class' do
+      expect(Piperator::Pipeline.pipe(add1).call([3]).to_a).to eq([4])
+    end
+
+    it 'treats pipeline pipe as an identity transformation' do
+      pipeline = Piperator::Pipeline.pipe(add1).pipe(Piperator::Pipeline)
+      expect(pipeline.call([1, 2]).to_a).to eq([2, 3])
+    end
   end
 end
