@@ -28,5 +28,10 @@ RSpec.describe Piperator::Pipeline do
       pipeline = Piperator::Pipeline.new
       expect((pipeline + add1 + square).call([1, 2, 3]).to_a).to eq([4, 9, 16])
     end
+
+    it 'aliases + to pipe' do
+      pipeline = Piperator::Pipeline.new
+      expect((pipeline.pipe(add1)).call([1]).to_a).to eq([2])
+    end
   end
 end

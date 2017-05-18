@@ -11,5 +11,7 @@ module Piperator
     def +(other)
       Pipeline.new(@chains + [other])
     end
+
+    alias pipe +
   end
 end
