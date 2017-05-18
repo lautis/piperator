@@ -1,11 +1,14 @@
 module Piperator
   # Pipeline is responsible of composition of a lazy enumerable from callables.
-  # It contains a collection of parts that respond to #call(enumerable) and
-  # return a enumerable.
+  # It contains a collection of pipes that respond to #call and return a
+  # enumerable.
+  #
+  # For streaming purposes, it usually is desirable to have pipes that takes
+  # a lazy Enumerator as an argument a return a (modified) lazy Enumerator.
   class Pipeline
     # Build a new pipeline from a callable or an enumerable object
     #
-    # @param callable An object responding to call(enumerable) and returns Enumerable or an Enumerable
+    # @param callable An object responding to call(enumerable) and returns Enumerable
     # @return [Pipeline] A pipeline containing only the callable
     def self.pipe(callable)
       if callable.respond_to?(:call)
@@ -24,14 +27,14 @@ module Piperator
       enumerable
     end
 
-    def initialize(chains = [])
-      @chains = chains
+    def initialize(pipes = [])
+      @pipes = pipes
     end
 
-    # Compute the pipeline and return a lazy enumerable with all the parts.
+    # Compute the pipeline and return a lazy enumerable with all the pipes.
     #
-    # @param enumerable Argument given to the first part in the pipeline
-    # @return [Enumerable] A lazy enumerable containing all the parts
+    # @param enumerable Argument passed to the first pipe in the pipeline.
+    # @return [Enumerable] A lazy enumerable containing all the pipes
     def call(enumerable = [])
       @pipes.reduce(enumerable) { |pipe, memo| memo.call(pipe) }
     end
@@ -45,10 +48,10 @@ module Piperator
 
     # Add a new part to the pipeline
     #
-    # @param other A part to append in pipeline. Responds to #call.
+    # @param other A pipe to append in pipeline. Responds to #call.
     # @return [Pipeline] A new pipeline instance
     def pipe(other)
-      Pipeline.new(@chains + [other])
+      Pipeline.new(@pipes + [other])
     end
   end
 end
