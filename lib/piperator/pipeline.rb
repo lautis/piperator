@@ -8,7 +8,7 @@ module Piperator
   class Pipeline
     # Build a new pipeline from a callable or an enumerable object
     #
-    # @param callable An object responding to call(enumerable) and returns Enumerable
+    # @param callable An object responding to call(enumerable)
     # @return [Pipeline] A pipeline containing only the callable
     def self.pipe(callable)
       if callable.respond_to?(:call)
