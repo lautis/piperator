@@ -1,5 +1,6 @@
 require 'piperator/version'
 require 'piperator/pipeline'
+require 'piperator/io'
 
 # Top-level shortcuts
 module Piperator

@@ -23,7 +23,9 @@ Start by requiring the gem
 require 'piperator'
 ```
 
-As an appetiser, here's a pipeline that triples all input values and then sums the values.
+### Pipelines
+
+As an appetizer, here's a pipeline that triples all input values and then sums the values.
 
 ```ruby
 Piperator.
@@ -123,6 +125,30 @@ prepend_append = Piperator.pipe(prepend_start).pipe(append_end)
 Piperator.pipe(double).pipe(prepend_append).call([1, 2, 3]).to_a
 # => ['start', 2, 4, 6, 'end']
 ```
+
+### Enumerators as IO objects
+
+Piperator also provides a helper class that allows `Enumerator`s to be used as
+IO objects. This is useful to provide integration with libraries that work only
+with IO objects such as [Nokogiri](http://www.nokogiri.org) or
+[Oj](https://github.com/ohler55/oj).
+
+An example pipe that would yield all XML node in a document read in streams:
+
+```ruby
+
+require 'nokogiri'
+streaming_xml = lambda do |enumerable|
+  Enumerator.new do |yielder|
+    io = Piperator::IO.new(enumerable.each)
+    reader = Nokogiri::XML::Reader(io)
+    reader.each { |node| yielder << node }
+  end
+end
+```
+
+In real-world scenarios, the pipe would need to filter the nodes. Passing every
+single XML node forward is not that useful.
 
 ## Development
 
