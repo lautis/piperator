@@ -41,6 +41,7 @@ module Piperator
 
     def initialize(pipes = [])
       @pipes = pipes
+      freeze
     end
 
     # Compute the pipeline and return a lazy enumerable with all the pipes.
