@@ -35,6 +35,12 @@ RSpec.describe Piperator::Pipeline do
         .to eq([4, 9, 16])
     end
 
+    it 'can compose values with using Pipeline#wrap' do
+      pipeline = Piperator::Pipeline.wrap([1, 2, 3]).pipe(square)
+
+      expect(pipeline.call.to_a).to eq([1, 4, 9])
+    end
+
     it 'can start composition from empty Pipeline class' do
       expect(Piperator::Pipeline.pipe(add1).call([3]).to_a).to eq([4])
     end
@@ -45,7 +51,7 @@ RSpec.describe Piperator::Pipeline do
     end
 
     it 'can start pipeline from an enumerable' do
-      pipeline = Piperator::Pipeline.pipe([1, 2, 3]).pipe(add1)
+      pipeline = Piperator::Pipeline.wrap([1, 2, 3]).pipe(add1)
       expect(pipeline.to_a).to eq([2, 3, 4])
     end
 

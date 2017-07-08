@@ -11,11 +11,23 @@ module Piperator
     # @param callable An object responding to call(enumerable)
     # @return [Pipeline] A pipeline containing only the callable
     def self.pipe(callable)
-      if callable.respond_to?(:call)
-        Pipeline.new([callable])
-      else
-        Pipeline.new([->(_) { callable }])
-      end
+      Pipeline.new([callable])
+    end
+
+    # Build a new pipeline from a from a non-callable, i.e. string, array, etc.
+    # This method will wrap the value in a proc, thus making it callable.
+    #
+    #   Piperator::Pipeline.wrap([1, 2, 3]).pipe(add_one)
+    #   # => [2, 3, 4]
+    #
+    #   # Wrap is syntactic sugar for wrapping a value in a proc
+    #   Piperator::Pipeline.pipe(->(_) { [1, 2, 3] }).pipe(add_one)
+    #   # => [2, 3, 4]
+    #
+    # @param callable A raw value which will be passed through the pipeline
+    # @return [Pipeline] A pipeline containing only the callable
+    def self.wrap(value)
+      Pipeline.new([->(_) { value }])
     end
 
     # Returns enumerable given as an argument without modifications. Usable when
@@ -29,6 +41,7 @@ module Piperator
 
     def initialize(pipes = [])
       @pipes = pipes
+      freeze
     end
 
     # Compute the pipeline and return a lazy enumerable with all the pipes.
@@ -52,6 +65,15 @@ module Piperator
     # @return [Pipeline] A new pipeline instance
     def pipe(other)
       Pipeline.new(@pipes + [other])
+    end
+
+    # Add a new value to the pipeline
+    #
+    # @param other A value which is wrapped into a pipe, then appended to the
+    # pipeline.
+    # @return [Pipeline] A new pipeline instance
+    def wrap(other)
+      Pipeline.new(@pipes + [->(_) { other }])
     end
   end
 end
