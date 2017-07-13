@@ -24,7 +24,7 @@ module Piperator
     #   Piperator::Pipeline.pipe(->(_) { [1, 2, 3] }).pipe(add_one)
     #   # => [2, 3, 4]
     #
-    # @param callable A raw value which will be passed through the pipeline
+    # @param value A raw value which will be passed through the pipeline
     # @return [Pipeline] A pipeline containing only the callable
     def self.wrap(value)
       Pipeline.new([->(_) { value }])

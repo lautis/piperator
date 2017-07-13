@@ -35,11 +35,11 @@ Piperator.
 # => 18
 ```
 
-If desired, the input enumerable can also be given as the first pipe.
+If desired, the input enumerable can also be given as the first elmenent of the pipeline using `Piperator.wrap`.
 
 ```ruby
 Piperator.
-  pipe([1, 2, 3]).
+  wrap([1, 2, 3]).
   pipe(->(values) { values.lazy.map { |i| i * 3 } }).
   pipe(->(values) { values.sum }).
   call
