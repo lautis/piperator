@@ -8,4 +8,8 @@ RSpec.describe Piperator do
   it 'can start piping from Piperator' do
     expect(Piperator.pipe(->(i) { i }).call([1, 2, 3]).to_a).to eq([1, 2, 3])
   end
+
+  it 'can start wrap directly from Piperator' do
+    expect(Piperator.wrap([1]).call.to_a).to eq([1])
+  end
 end
