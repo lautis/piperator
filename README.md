@@ -35,7 +35,7 @@ Piperator.
 # => 18
 ```
 
-If desired, the input enumerable can also be given as the first elmenent of the pipeline using `Piperator.wrap`.
+If desired, the input enumerable can also be given as the first element of the pipeline using `Piperator.wrap`.
 
 ```ruby
 Piperator.
