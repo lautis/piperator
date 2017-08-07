@@ -6,6 +6,20 @@ The library is heavily inspired by [Elixir pipe operator](https://elixirschool.c
 
 [![Build Status](https://travis-ci.org/lautis/piperator.svg?branch=master)](https://travis-ci.org/lautis/piperator)
 
+<!-- START doctoc generated TOC please keep comment here to allow auto update -->
+<!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
+**Table of Contents**
+
+- [Installation](#installation)
+- [Usage](#usage)
+  - [Pipelines](#pipelines)
+  - [Enumerators as IO objects](#enumerators-as-io-objects)
+- [Development](#development)
+- [Related Projects](#related-projects)
+- [Contributing](#contributing)
+- [License](#license)
+
+<!-- END doctoc generated TOC please keep comment here to allow auto update -->
 
 ## Installation
 
@@ -155,6 +169,12 @@ single XML node forward is not that useful.
 After checking out the repo, run `bin/setup` to install dependencies. Then, run `rake spec` to run the tests. You can also run `bin/console` for an interactive prompt that will allow you to experiment.
 
 To install this gem onto your local machine, run `bundle exec rake install`. To release a new version, update the version number in `version.rb`, and then run `bundle exec rake release`, which will create a git tag for the version, push git commits and tags, and push the `.gem` file to [rubygems.org](https://rubygems.org).
+
+## Related Projects
+
+* [D★Stream](https://github.com/ddfreyne/d-stream) - Set of extensions for writing stream-processing code.
+* [ddbuffer](https://github.com/ddfreyne/ddbuffer) - Buffer enumerables/enumerators.
+* [Down::ChunkedIO](https://github.com/janko-m/down/blob/master/lib/down/chunked_io.rb) - A similar IO class as Piperator::IO.
 
 ## Contributing
 
