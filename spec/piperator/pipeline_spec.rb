@@ -3,7 +3,7 @@ require 'spec_helper'
 RSpec.describe Piperator::Pipeline do
   let(:add1) { ->(input) { input.lazy.map { |i| i + 1 } } }
   let(:square) { ->(input) { input.lazy.map { |i| i * i } } }
-  let(:sum) { ->(input) { input.sum } }
+  let(:sum) { ->(input) { input.reduce(0, &:+) } }
 
   describe 'calling' do
     it 'calls through all chain pipes in order' do
