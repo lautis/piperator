@@ -12,4 +12,13 @@ RSpec.describe Piperator do
   it 'can start wrap directly from Piperator' do
     expect(Piperator.wrap([1]).call.to_a).to eq([1])
   end
+
+  it 'can build a pipeline with block' do
+    pipeline = Piperator.pipeline do
+      wrap [4, 5]
+      pipe(->(input) { input.lazy.map { |i| i + 1 } })
+      pipe(->(input) { input.lazy.map { |i| i * 2 } })
+    end
+    expect(pipeline.call.to_a).to eq([10, 12])
+  end
 end

@@ -1,9 +1,20 @@
 require 'piperator/version'
 require 'piperator/pipeline'
 require 'piperator/io'
+require 'piperator/builder'
 
 # Top-level shortcuts
 module Piperator
+  # Build a new pipeline using DSL
+  #
+  # @see Piperator::Pipeline
+  # @return [Pipeline] Pipeline containing defined steps
+  def self.pipeline(&block)
+    Builder.new.tap do |builder|
+      builder.instance_eval(&block)
+    end.to_pipeline
+  end
+
   # Build a new pipeline from a callable or an enumerable object
   #
   # @see Piperator::Pipeline.pipe
