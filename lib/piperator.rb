@@ -10,7 +10,7 @@ module Piperator
   # @see Piperator::Pipeline
   # @return [Pipeline] Pipeline containing defined steps
   def self.pipeline(&block)
-    Builder.new.tap do |builder|
+    Builder.new(block.binding).tap do |builder|
       builder.instance_eval(&block)
     end.to_pipeline
   end

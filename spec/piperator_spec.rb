@@ -14,8 +14,11 @@ RSpec.describe Piperator do
   end
 
   it 'can build a pipeline with block' do
+    def ok?
+      true
+    end
     pipeline = Piperator.pipeline do
-      wrap [4, 5]
+      wrap [4, 5] if ok?
       pipe(->(input) { input.lazy.map { |i| i + 1 } })
       pipe(->(input) { input.lazy.map { |i| i * 2 } })
     end
