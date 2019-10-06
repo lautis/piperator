@@ -21,4 +21,16 @@ RSpec.describe Piperator do
     end
     expect(pipeline.call.to_a).to eq([10, 12])
   end
+
+  it 'can build a pipeline with block referencing methods/variables outside of the block scope' do
+    def should_do_step?
+      true
+    end
+    pipeline = Piperator.pipeline do
+      wrap [4, 5]
+      pipe(->(input) { input.lazy.map { |i| i + 1 } }) if should_do_step?
+      pipe(->(input) { input.lazy.map { |i| i * 2 } })
+    end
+    expect(pipeline.call.to_a).to eq([10, 12])
+  end
 end
