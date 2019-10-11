@@ -17,7 +17,7 @@ module Piperator
       end
     end
 
-    def respond_to_missing?(meth, include_private = false)
+    def respond_to_missing?(method_name, include_private = false)
       @saved_binding.receiver.respond_to?(method_name, include_private) || super
     end
 
