@@ -13,15 +13,38 @@ RSpec.describe Piperator do
     expect(Piperator.wrap([1]).call.to_a).to eq([1])
   end
 
-  it 'can build a pipeline with block' do
-    def ok?
-      true
+  describe '.pipeline' do
+    it 'can build a pipeline with block' do
+      def ok?
+        true
+      end
+      pipeline = Piperator.pipeline do
+        wrap [4, 5] if ok?
+        pipe(->(input) { input.lazy.map { |i| i + 1 } })
+        pipe(->(input) { input.lazy.map { |i| i * 2 } })
+      end
+      expect(pipeline.call.to_a).to eq([10, 12])
     end
-    pipeline = Piperator.pipeline do
-      wrap [4, 5] if ok?
-      pipe(->(input) { input.lazy.map { |i| i + 1 } })
-      pipe(->(input) { input.lazy.map { |i| i * 2 } })
+
+    it 'can call private methods' do
+      klass = Class.new do
+        def pipeline
+          Piperator.pipeline do
+            wrap [4, 5]
+            pipe plus1
+          end
+        end
+
+        private
+
+        def plus1
+          ->(input) { input.lazy.map { |i| i + 1 } }
+        end
+      end
+
+      expect(klass.new.pipeline.to_a).to eq([5, 6])
     end
-    expect(pipeline.call.to_a).to eq([10, 12])
   end
+
+
 end

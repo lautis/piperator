@@ -10,7 +10,7 @@ module Piperator
     end
 
     def method_missing(method_name, *arguments, &block)
-      if @saved_binding.receiver.respond_to?(method_name)
+      if @saved_binding.receiver.respond_to?(method_name, true)
         @saved_binding.receiver.send(method_name, *arguments, &block)
       else
         super
