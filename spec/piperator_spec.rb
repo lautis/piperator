@@ -44,6 +44,15 @@ RSpec.describe Piperator do
 
       expect(klass.new.pipeline.to_a).to eq([5, 6])
     end
+
+    it 'gives builder as argument' do
+      @ok = -> { true }
+
+      expect(Piperator.pipeline do |pipeline|
+        pipeline.wrap [4, 5] if @ok
+        pipeline.pipe(->(input) { input.lazy.map { |i| i + 1 } })
+      end.to_a).to eq([5, 6])
+    end
   end
 
 

@@ -11,7 +11,11 @@ module Piperator
   # @return [Pipeline] Pipeline containing defined steps
   def self.pipeline(&block)
     Builder.new(block.binding).tap do |builder|
-      builder.instance_eval(&block)
+      if block.arity.positive?
+        yield builder
+      else
+        builder.instance_eval(&block)
+      end
     end.to_pipeline
   end
 
