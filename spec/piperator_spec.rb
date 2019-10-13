@@ -1,5 +1,6 @@
 require 'spec_helper'
 
+# rubocop:disable Metrics/BlockLength
 RSpec.describe Piperator do
   it 'has a version number' do
     expect(Piperator::VERSION).not_to be nil
@@ -13,12 +14,12 @@ RSpec.describe Piperator do
     expect(Piperator.wrap([1]).call.to_a).to eq([1])
   end
 
-  describe '.pipeline' do
+  describe '.build' do
     it 'can build a pipeline with block' do
       def ok?
         true
       end
-      pipeline = Piperator.pipeline do
+      pipeline = Piperator.build do
         wrap [4, 5] if ok?
         pipe(->(input) { input.lazy.map { |i| i + 1 } })
         pipe(->(input) { input.lazy.map { |i| i * 2 } })
@@ -29,7 +30,7 @@ RSpec.describe Piperator do
     it 'can call private methods' do
       klass = Class.new do
         def pipeline
-          Piperator.pipeline do
+          Piperator.build do
             wrap [4, 5]
             pipe plus1
           end
@@ -48,12 +49,10 @@ RSpec.describe Piperator do
     it 'gives builder as argument' do
       @ok = -> { true }
 
-      expect(Piperator.pipeline do |pipeline|
+      expect(Piperator.build do |pipeline|
         pipeline.wrap [4, 5] if @ok
         pipeline.pipe(->(input) { input.lazy.map { |i| i + 1 } })
       end.to_a).to eq([5, 6])
     end
   end
-
-
 end
