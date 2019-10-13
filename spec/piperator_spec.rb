@@ -15,6 +15,10 @@ RSpec.describe Piperator do
   end
 
   describe '.build' do
+    it 'returns a new Pipeline' do
+      expect(Piperator.build).to be_a(Piperator::Pipeline)
+    end
+
     it 'can build a pipeline with block' do
       def ok?
         true
