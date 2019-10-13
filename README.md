@@ -49,6 +49,15 @@ Piperator.
 # => 18
 ```
 
+The same could also be achieved using DSL instead of method chaining:
+
+```ruby
+Piperator.build do
+  pipe(->(values) { values.lazy.map { |i| i * 3 } })
+  pipe(->(values) { values.sum })
+end.call([1, 2, 3])
+```
+
 If desired, the input enumerable can also be given as the first element of the pipeline using `Piperator.wrap`.
 
 ```ruby
