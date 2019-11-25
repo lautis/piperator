@@ -6,12 +6,13 @@ module Piperator
     FLUSH_THRESHOLD = 128 * 1028 # 128KiB
 
     attr_reader :eof
+    attr_reader :pos
 
     def initialize(enumerator, flush_threshold: FLUSH_THRESHOLD)
       @enumerator = enumerator
       @flush_threshold = flush_threshold
       @buffer = StringIO.new
-      @buffer_start_pos = 0
+      @pos = 0
       @buffer_read_pos = 0
       @eof = false
     end
@@ -62,7 +63,7 @@ module Piperator
     # @param length [Integer] number of bytes to read
     # @return String
     def read(length = nil)
-      return @enumerator.next if length.nil? && readable_bytes.zero?
+      return @enumerator.next.tap { |e| @pos += e.bytesize } if length.nil? && readable_bytes.zero?
       @buffer.write(@enumerator.next) while !@eof && readable_bytes < (length || 1)
       read_with { @buffer.read(length) }
     rescue StopIteration
@@ -103,8 +104,8 @@ module Piperator
     end
 
     def initialize_buffer(data = nil)
+      @pos += @buffer_read_pos
       @buffer_read_pos = 0
-      @buffer_start_pos += @buffer.pos if @buffer
       @buffer = StringIO.new
       @buffer.write(data) if data
     end
