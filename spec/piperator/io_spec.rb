@@ -27,6 +27,18 @@ RSpec.describe Piperator::IO do
     end
   end
 
+  describe '#pos' do
+    subject { Piperator::IO.new(%w[123 456].each, flush_threshold: 4) }
+
+    it 'is correctly set when using the default #read' do
+      expect { subject.read }.to change(subject, :pos).to(3)
+    end
+
+    it 'is correctly set when performing a partial #read' do
+      expect { subject.read(4) }.to change(subject, :pos).to(4)
+    end
+  end
+
   describe '#gets' do
     subject { Piperator::IO.new(["foo\n", "bar\n"].each) }
 
