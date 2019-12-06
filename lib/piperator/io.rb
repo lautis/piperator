@@ -18,6 +18,7 @@ module Piperator
     end
 
     alias eof? eof
+    alias tell pos
 
     # Return the first bytes of the buffer without marking the buffer as read.
     def peek(bytes)

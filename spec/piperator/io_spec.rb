@@ -37,6 +37,10 @@ RSpec.describe Piperator::IO do
     it 'is correctly set when performing a partial #read' do
       expect { subject.read(4) }.to change(subject, :pos).to(4)
     end
+
+    it 'is aliased as #tell' do
+      expect { subject.read }.to change(subject, :tell).to(3)
+    end
   end
 
   describe '#gets' do
