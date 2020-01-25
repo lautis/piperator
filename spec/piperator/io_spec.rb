@@ -81,6 +81,14 @@ RSpec.describe Piperator::IO do
     end
   end
 
+  describe '#each_line' do
+    subject { Piperator::IO.new(["foo\n", "bar\n", "baz\nbmp"].each) }
+
+    it 'return enumerated lines' do
+      expect(subject.each_line.to_a).to eq(["foo", "bar", "baz", "bmp"])
+    end
+  end
+
   describe '#flush' do
     subject { Piperator::IO.new(['a' * 16 * KILOBYTE].each) }
     let(:flush_threshold) { Piperator::IO::FLUSH_THRESHOLD }

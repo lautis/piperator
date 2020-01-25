@@ -49,6 +49,13 @@ module Piperator
       read_with { @buffer.gets(separator) }
     end
 
+    # Returns an enumerator of lines in the stream, without reading the entire stream into memory
+    #
+    # @return [Enumerator]
+    def each_line
+      Enumerator.new { |y| loop { y << gets&.gsub(/#{$INPUT_RECORD_SEPARATOR}$/, '') } }.lazy.take_while(&:itself).each
+    end  
+
     # Flush internal buffer until the last unread byte
     def flush
       if @buffer.pos == @buffer_read_pos
