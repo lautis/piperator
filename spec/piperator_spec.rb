@@ -20,15 +20,21 @@ RSpec.describe Piperator do
     end
 
     it 'can build a pipeline with block' do
+      counter = 0
       def ok?
         true
       end
       pipeline = Piperator.build do
         wrap [4, 5] if ok?
         pipe(->(input) { input.lazy.map { |i| i + 1 } })
+        lazy do
+          counter += 1
+          ->(input) { input.lazy }
+        end
         pipe(->(input) { input.lazy.map { |i| i * 2 } })
       end
       expect(pipeline.call.to_a).to eq([10, 12])
+      expect(counter).to eq(1)
     end
 
     it 'can call private methods' do

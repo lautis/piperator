@@ -59,4 +59,29 @@ RSpec.describe Piperator::Pipeline do
       expect(Piperator::Pipeline.pipe(add1).pipe(sum).call([1, 2, 3])).to eq(9)
     end
   end
+
+  describe '#lazy' do
+    it 'gets invoked' do
+      counter = 0
+      chain = Piperator::Pipeline.pipe(add1).lazy do
+        counter += 1
+        ->(input) { input.lazy }
+      end
+
+      expect(chain.call([1, 2, 3]).to_a).to eq([2, 3, 4])
+      expect(counter).to eq(1)
+    end
+
+    it 'memoizes its pipe' do
+      counter = 0
+      chain = Piperator::Pipeline.pipe(add1).lazy do
+        counter += 1
+        ->(input) { input.lazy }
+      end
+
+      expect(chain.call([1, 2, 3]).to_a).to eq([2, 3, 4])
+      expect(chain.call([1, 2, 3]).to_a).to eq([2, 3, 4])
+      expect(counter).to eq(1)
+    end
+  end
 end

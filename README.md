@@ -69,6 +69,18 @@ Piperator.
 # => 18
 ```
 
+Have reasons to defer constructing a pipe? Evaluate it lazily:
+
+```ruby
+summing = ->(values) { values.sum }
+Piperator.build
+  pipe(->(values) { values.lazy.map { |i| i * 3 } })
+  lazy do
+    summing
+  end
+end.call([1, 2, 3])
+```
+
 There is, of course, a much more idiomatic alternative in Ruby:
 
 ```ruby
