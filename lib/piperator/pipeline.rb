@@ -6,6 +6,20 @@ module Piperator
   # For streaming purposes, it usually is desirable to have pipes that takes
   # a lazy Enumerator as an argument a return a (modified) lazy Enumerator.
   class Pipeline
+    # Build a new pipeline from a lazily evaluated callable or an enumerable
+    # object.
+    #
+    # @param block A block returning a callable(enumerable)
+    # @return [Pipeline] A pipeline containing only the lazily evaluated
+    # callable.
+    def self.lazy(&block)
+      callable = nil
+      Pipeline.new([lambda do |e|
+        callable ||= block.call
+        callable.call(e)
+      end])
+    end
+
     # Build a new pipeline from a callable or an enumerable object
     #
     # @param callable An object responding to call(enumerable)
@@ -57,6 +71,19 @@ module Piperator
     # @return [Array]
     def to_a(enumerable = [])
       call(enumerable).to_a
+    end
+
+    # Add a new lazily evaluated part to the pipeline.
+    #
+    # @param block A block returning a callable(enumerable) to append in
+    # pipeline.
+    # @return [Pipeline] A new pipeline instance
+    def lazy(&block)
+      callable = nil
+      Pipeline.new(@pipes + [lambda do |e|
+        callable ||= block.call
+        callable.call(e)
+      end])
     end
 
     # Add a new part to the pipeline

@@ -16,11 +16,12 @@ module Piperator
     #
     #   @see Pipeline.$1
     def self.dsl_method(method_name)
-      define_method(method_name) do |*arguments|
-        @pipeline = @pipeline.send(method_name, *arguments)
+      define_method(method_name) do |*arguments, &block|
+        @pipeline = @pipeline.send(method_name, *arguments, &block)
       end
     end
 
+    dsl_method :lazy
     dsl_method :pipe
     dsl_method :wrap
 
