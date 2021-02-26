@@ -2,7 +2,7 @@
 
 Pipelines for streaming large collections. The pipeline enables composition of streaming pipelines with lazy enumerables.
 
-The library is heavily inspired by [Elixir pipe operator](https://elixirschool.com/lessons/basics/pipe-operator/) and [Node.js Stream](https://nodejs.org/api/stream.html).
+The library is heavily inspired by [Elixir pipe operator](https://elixirschool.com/en/lessons/basics/pipe-operator/) and [Node.js Stream](https://nodejs.org/api/stream.html).
 
 <!-- START doctoc generated TOC please keep comment here to allow auto update -->
 <!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
