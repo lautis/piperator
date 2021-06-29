@@ -51,4 +51,33 @@ module Piperator
   def self.wrap(value)
     Pipeline.wrap(value)
   end
+
+  # Coerce any enumerator to be an IO (via pipe).
+  #
+  # Pro: infinite length without using infinite memory.  Con: unseekable (as is IO::Pipe).
+  #
+  # @param enumerator [Enumerator] source of data; infinite sources are OK
+  # @yieldparam io_r [IO] readable IO
+  def self.infinite_io(enumerator)
+    stop = false
+    io_r, io_w = ::IO.pipe  # not the IO from this library
+
+    # a thread writes all the data to the pipe.  the pipe automatically buffers everything for us
+    thr = Thread.new do
+      enumerator.each do |chunk|
+        break if stop
+        io_w.write(chunk)
+      end
+    ensure
+      io_w.close
+    end
+
+    yield io_r
+  ensure
+    stop = true
+    io_r.read until io_r.eof? # must drain, or risk closing before writes finish -- broken pipe
+    io_r.close                # must close ???
+    thr.join                  # must ensure that all data desired to be written is actually written
+  end
+
 end
