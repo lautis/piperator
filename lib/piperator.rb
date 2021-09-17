@@ -2,6 +2,7 @@ require 'piperator/version'
 require 'piperator/pipeline'
 require 'piperator/io'
 require 'piperator/builder'
+require 'docile'
 
 # Top-level shortcuts
 module Piperator
@@ -25,11 +26,11 @@ module Piperator
   def self.build(&block)
     return Pipeline.new unless block_given?
 
-    Builder.new(block&.binding).tap do |builder|
+    Builder.new.tap do |builder|
       if block.arity.positive?
         yield builder
       else
-        builder.instance_eval(&block)
+        Docile.dsl_eval(builder, &block)
       end
     end.to_pipeline
   end
