@@ -1,7 +1,12 @@
 require 'bundler/setup'
 require 'simplecov'
+require 'simplecov-cobertura'
 SimpleCov.start do
   add_filter '/spec/'
+end
+
+if ENV['CI']
+  SimpleCov.formatter = SimpleCov::Formatter::CoberturaFormatter
 end
 
 require 'piperator'
