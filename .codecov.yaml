@@ -1,0 +1,7 @@
+comment: false
+
+coverage:
+  status:
+    project:
+      default:
+        only_pulls: true
