@@ -60,6 +60,30 @@ RSpec.describe Piperator::Pipeline do
     end
   end
 
+  describe '.lazy' do
+    it 'gets invoked' do
+      counter = 0
+      chain = Piperator::Pipeline.lazy do
+        counter += 1
+        ->(input) { input }
+      end
+
+      expect(chain.call([1, 2, 3]).to_a).to eq([1, 2, 3])
+      expect(counter).to eq(1)
+    end
+
+    it 'memoizes its pipe' do
+      counter = 0
+      chain = Piperator::Pipeline.lazy do
+        counter += 1
+        ->(input) { input }
+      end
+
+      2.times { chain.call([1, 2, 3]) }
+      expect(counter).to eq(1)
+    end
+  end
+
   describe '#lazy' do
     it 'gets invoked' do
       counter = 0
