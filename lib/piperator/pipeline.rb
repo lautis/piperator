@@ -13,11 +13,7 @@ module Piperator
     # @return [Pipeline] A pipeline containing only the lazily evaluated
     # callable.
     def self.lazy(&block)
-      callable = nil
-      Pipeline.new([lambda do |e|
-        callable ||= block.call
-        callable.call(e)
-      end])
+      Pipeline.new([]).lazy(&block)
     end
 
     # Build a new pipeline from a callable or an enumerable object
