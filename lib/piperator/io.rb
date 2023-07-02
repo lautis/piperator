@@ -62,14 +62,15 @@ module Piperator
     # Reads length bytes from the I/O stream.
     #
     # @param length [Integer] number of bytes to read
+    # @param buffer [String] optional read buffer
     # @return String
-    def read(length = nil)
+    def read(length = nil, buffer = nil)
       return @enumerator.next.tap { |e| @pos += e.bytesize } if length.nil? && readable_bytes.zero?
       @buffer.write(@enumerator.next) while !@eof && readable_bytes < (length || 1)
-      read_with { @buffer.read(length) }
+      read_with { @buffer.read(length, buffer) }
     rescue StopIteration
       @eof = true
-      read_with { @buffer.read(length) } if readable_bytes > 0
+      read_with { @buffer.read(length, buffer) } if readable_bytes > 0
     end
 
     # Current buffer size - including non-freed read content

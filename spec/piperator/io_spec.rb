@@ -25,6 +25,13 @@ RSpec.describe Piperator::IO do
     it 'defaults to returning items one by one' do
       expect(subject.read).to eq('foo')
     end
+
+    it 'reads into buffer' do
+      buffer = ''
+      subject.read(2, buffer)
+
+      expect(buffer).to eq('fo')
+    end
   end
 
   describe '#pos' do
