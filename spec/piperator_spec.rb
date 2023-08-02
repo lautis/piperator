@@ -24,8 +24,9 @@ RSpec.describe Piperator do
       def ok?
         true
       end
+      @four = 4
       pipeline = Piperator.build do
-        wrap [4, 5] if ok?
+        wrap [@four, 5] if ok?
         pipe(->(input) { input.lazy.map { |i| i + 1 } })
         lazy do
           counter += 1

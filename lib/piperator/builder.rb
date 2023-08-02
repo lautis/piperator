@@ -25,9 +25,8 @@ module Piperator
     dsl_method :pipe
     dsl_method :wrap
 
-    def initialize(saved_binding, pipeline = Pipeline.new)
+    def initialize(pipeline = Pipeline.new)
       @pipeline = pipeline
-      @saved_binding = saved_binding
     end
 
     # Return build pipeline
@@ -35,20 +34,6 @@ module Piperator
     # @return [Pipeline]
     def to_pipeline
       @pipeline
-    end
-
-    private
-
-    def method_missing(method_name, *arguments, &block)
-      if @saved_binding.receiver.respond_to?(method_name, true)
-        @saved_binding.receiver.send(method_name, *arguments, &block)
-      else
-        super
-      end
-    end
-
-    def respond_to_missing?(method_name, include_private = false)
-      @saved_binding.receiver.respond_to?(method_name, include_private) || super
     end
   end
 end
