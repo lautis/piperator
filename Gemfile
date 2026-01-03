@@ -4,6 +4,6 @@ source 'https://rubygems.org'
 gemspec
 
 if RUBY_VERSION >= '2.5'
-  gem 'simplecov', '~> 0.21.2', group: [:development]
-  gem 'simplecov-cobertura', '~> 2.1.0', group: [:development]
+  gem 'simplecov', '~> 0.22.0', group: [:development]
+  gem 'simplecov-cobertura', '~> 3.1.0', group: [:development]
 end
