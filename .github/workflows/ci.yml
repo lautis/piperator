@@ -43,8 +43,9 @@ jobs:
           ruby-version: ${{ matrix.ruby }}
           bundler-cache: true
       - run: bundle exec rake
-      - uses: codecov/codecov-action@v2
+      - uses: codecov/codecov-action@v5
         if: ${{ matrix.os == 'ubuntu' && matrix.ruby == '4.0' }}
         with:
-          file: ./coverage/coverage.xml
+          files: ./coverage/coverage.xml
           fail_ci_if_error: true
+          token: ${{ secrets.CODECOV_TOKEN }}
