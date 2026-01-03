@@ -38,7 +38,7 @@ jobs:
           bundler-cache: true
       - run: bundle exec rake
       - uses: codecov/codecov-action@v2
-        if: ${{ matrix.os == 'ubuntu' && matrix.ruby == '3.0' }}
+        if: ${{ matrix.os == 'ubuntu' && matrix.ruby == '4.0' }}
         with:
           file: ./coverage/coverage.xml
           fail_ci_if_error: true
