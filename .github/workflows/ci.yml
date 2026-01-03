@@ -30,6 +30,12 @@ jobs:
             ruby: jruby
           - os: windows
             ruby: truffleruby
+          - os: macos
+            ruby: 2.3
+          - os: macos
+            ruby: 2.4
+          - os: macos
+            ruby: 2.5
     steps:
       - uses: actions/checkout@v2
       - uses: ruby/setup-ruby@v1
